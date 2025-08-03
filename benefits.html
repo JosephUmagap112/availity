@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AVAILITY - Benefits & Eligibility</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button id="backBtn" onclick="window.history.back()">
+    <span class="icon-back" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="11" cy="11" r="11" fill="#5ec6e7"/>
+        <path d="M13.5 7L9.5 11L13.5 15" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    Back
+  </button>
+  <div class="benefits-header">
+    <h1>Benefits & Eligibility</h1>
+    <p class="subtitle">Check member eligibility, view benefits, and download training PDFs.</p>
+  </div>
+  <div class="form-section">
+    <form id="eligibilityForm" onsubmit="event.preventDefault(); lookupPDF();">
+      <fieldset>
+        <legend>Patient Information</legend>
+        <label for="fullName">Full Name:
+          <input type="text" id="fullName" name="fullName" autocomplete="name">
+        </label>
+        <label for="patientId">Patient ID: <span class="required">*</span>
+          <input type="text" id="patientId" name="patientId" required autocomplete="off">
+        </label>
+        <label for="dob">Date of Birth:
+          <input type="date" id="dob" name="dob">
+        </label>
+      </fieldset>
+      <fieldset>
+        <legend>Provider Information</legend>
+        <label>Organization:<input type="text" id="organization"></label>
+        <label>Payer:
+          <select id="payer">
+            <option value="">-- Select Payer --</option>
+            <option value="Aetna">Aetna</option>
+            <option value="United Health">United Health</option>
+            <option value="Blue Cross">Blue Cross</option>
+            <option value="Cigna">Cigna</option>
+            <option value="Humana">Humana</option>
+            <option value="Medicare">Medicare</option>
+            <option value="Medicaid">Medicaid</option>
+            <option value="Tricare">Tricare</option>
+            <option value="Kaiser Permanente">Kaiser Permanente</option>
+            <option value="Molina Healthcare">Molina Healthcare</option>
+            <option value="Centene">Centene</option>
+            <option value="WellCare">WellCare</option>
+            <option value="Other">Other</option>
+          </select>
+        </label>
+        <label>Provider NPI:<input type="text" id="providerNPI"></label>
+        <label>Provider Tax ID:<input type="text" id="taxID"></label>
+      </fieldset>
+      <fieldset>
+        <legend>Service Information</legend>
+        <label>As of Date:<input type="date" id="asOfDate"></label>
+        <label>Benefit / Service Type:
+          <select id="serviceType" title="Type of benefit or service requested">
+            <option value="">-- Select Service Type --</option>
+            <option value="Medical">Medical</option>
+            <option value="Dental">Dental</option>
+            <option value="Vision">Vision</option>
+            <option value="Pharmacy">Pharmacy</option>
+            <option value="Behavioral Health">Behavioral Health</option>
+            <option value="Physical Therapy">Physical Therapy</option>
+            <option value="Occupational Therapy">Occupational Therapy</option>
+            <option value="Speech Therapy">Speech Therapy</option>
+            <option value="Chiropractic">Chiropractic</option>
+            <option value="Durable Medical Equipment">Durable Medical Equipment</option>
+            <option value="Home Health">Home Health</option>
+            <option value="Hospice">Hospice</option>
+            <option value="Laboratory">Laboratory</option>
+            <option value="Radiology">Radiology</option>
+            <option value="Emergency Services">Emergency Services</option>
+            <option value="Ambulance">Ambulance</option>
+            <option value="Other">Other</option>
+          </select>
+        </label>
+        <span id="serviceTypeTip" class="field-tip">E.g. Medical, Dental, DME, Home Health</span>
+        </label>
+      </fieldset>
+      <div class="form-actions">
+        <button type="submit">Submit</button>
+        <button type="reset" class="reset-btn">Submit another patient</button>
+      </div>
+    </form>
+    <div id="loadingSpinner" class="loading-spinner" aria-live="polite" style="display:none;">
+      <div class="spinner"></div>
+      <span>Loading PDF...</span>
+    </div>
+    <div id="pdfViewer" class="pdf-viewer"></div>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="script.js"></script>
+  <style>
+    .field-tip {
+      display: block;
+      font-size: 0.92em;
+      color: #3a8dde;
+      margin-bottom: 0.5em;
+      text-align: center;
+    }
+    .loading-spinner {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7em;
+      margin-top: 18px;
+      font-size: 1.08em;
+      color: #2a4d69;
+    }
+    .loading-spinner.show {
+      display: flex;
+    }
+    .spinner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      margin: 16px 0 0 16px;
+      border-top: 4px solid #3a8dde;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  <script>
+    // Enhance PDF lookup with loading spinner
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('eligibilityForm');
+      const spinner = document.getElementById('loadingSpinner');
+      const pdfViewer = document.getElementById('pdfViewer');
+      if (form && spinner && pdfViewer) {
+        form.addEventListener('submit', function() {
+          spinner.classList.add('show');
+          pdfViewer.style.display = 'none';
+          setTimeout(() => {
+            spinner.classList.remove('show');
+            pdfViewer.style.display = 'block';
+          }, 1200);
+        });
+        form.addEventListener('reset', function() {
+          spinner.classList.remove('show');
+          pdfViewer.style.display = 'none';
+        });
+      }
+    });
+  </script>
+    .pdf-viewer {
+      display: none;
+      margin-top: 20px;
+      text-align: center;
+    }
+    .pdf-frame {
+      width: 90%;
+      height: 500px;
+      border: 1px solid #3a8dde;
+      border-radius: 8px;
+    }
+    body {
+      position: relative;
+      background: linear-gradient(135deg, #e3f0ff 0%, #f4f6fb 100%);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #1a2540;
+      margin: 0;
+      min-height: 100vh;
+    }
+    .benefits-header {
+      text-align: center;
+      margin-top: 2.5em;
+      margin-bottom: 1.5em;
+    }
+    .benefits-header h1 {
+      font-size: 1.35em;
+      color: #3a8dde;
+      margin-bottom: 0.2em;
+    }
+    .subtitle {
+      color: #5ec6e7;
+      font-size: 0.95em;
+      margin-bottom: 0.5em;
+    }
+    .form-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+    form {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(58,141,222,0.10);
+      padding: 2em 2em 1.5em 2em;
+      max-width: 480px;
+      width: 100%;
+      margin-bottom: 2em;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2em;
+    }
+    fieldset {
+      border: 1.5px solid #5ec6e7;
+      border-radius: 12px;
+      padding: 1em 1em 0.5em 1em;
+      margin-bottom: 1em;
+    }
+    legend {
+      color: #3a8dde;
+      font-weight: 600;
+      font-size: 0.98em;
+      padding: 0 0.5em;
+    }
+    label {
+      display: flex;
+      flex-direction: column;
+      font-size: 0.95em;
+      margin-bottom: 0.7em;
+      color: #1a2540;
+    }
+    input, select {
+      margin-top: 0.3em;
+      padding: 0.45em;
+      border-radius: 6px;
+      border: 1px solid #5ec6e7;
+      font-size: 0.95em;
+      background: #fafdff;
+      color: #1a2540;
+    }
+    .required {
+      color: #e53935;
+      font-size: 1em;
+      margin-left: 2px;
+      font-weight: bold;
+    }
+    .form-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.7em;
+      margin-top: 1em;
+    }
+    button[type="submit"] {
+      background: linear-gradient(90deg, #3a8dde 0%, #5ec6e7 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5em 1.1em;
+      font-size: 0.95em;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(58,141,222,0.10);
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+      width: 100%;
+      max-width: 220px;
+    }
+    button[type="submit"]:hover {
+      background: #5ec6e7;
+      color: #fff;
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 18px rgba(58,141,222,0.18);
+    }
+    .reset-btn {
+      background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5em 1.1em;
+      font-size: 0.95em;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(67,233,123,0.10);
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+      width: 100%;
+      max-width: 220px;
+    }
+    .reset-btn:hover {
+      background: #38f9d7;
+      color: #fff;
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 18px rgba(67,233,123,0.18);
+    }
+    #backBtn {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      background: linear-gradient(90deg, #3a8dde 0%, #5ec6e7 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.6em 1.4em 0.6em 1em;
+      font-size: 1.08em;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(58,141,222,0.10);
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    #backBtn:hover {
+      background: #5ec6e7;
+      color: #fff;
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 18px rgba(58,141,222,0.18);
+    }
+    .icon-back {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+    @media (max-width: 600px) {
+      #backBtn {
+        top: 0;
+        left: 0;
+        margin: 8px 0 0 8px;
+        font-size: 0.95em;
+        padding: 0.5em 1em 0.5em 0.7em;
+      }
+    }
+    @media (max-width: 600px) {
+      .form-section form {
+        padding: 1em 0.5em 1em 0.5em;
+        max-width: 98vw;
+      }
+      .benefits-header h1 {
+        font-size: 1.3em;
+      }
+      #backBtn {
+        top: 12px;
+        left: 8px;
+        font-size: 0.95em;
+        padding: 0.5em 1em 0.5em 0.7em;
+      }
+    }
+  </style>
+</body>
+</html>
+
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="script.js"></script>
+  <style>
+    #backBtn {
+      position: absolute;
+      top: 24px;
+      left: 24px;
+      background: linear-gradient(90deg, #3a8dde 0%, #5ec6e7 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.6em 1.4em 0.6em 1em;
+    .icon-back {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+      font-size: 1.08em;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(58,141,222,0.10);
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+      z-index: 10;
+    }
+    #backBtn:hover {
+      background: #5ec6e7;
+      color: #fff;
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 18px rgba(58,141,222,0.18);
+    }
+    body {
+      position: relative;
+    }
+    .center-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+    }
+    .center-content h2,
+    .center-content input,
+    .center-content button,
+    .center-content #pdfViewer {
+      margin-bottom: 1em;
+    }
+    .center-content input {
+      width: 260px;
+      max-width: 90vw;
+      padding: 0.5em;
+      border-radius: 6px;
+      border: 1px solid #5ec6e7;
+      font-size: 1em;
+    }
+    .center-content button:not(#backBtn) {
+      background: linear-gradient(90deg, #3a8dde 0%, #5ec6e7 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5em 1.2em;
+      font-size: 1em;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(58,141,222,0.10);
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+    .center-content button:not(#backBtn):hover {
+      background: #5ec6e7;
+      color: #fff;
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 18px rgba(58,141,222,0.18);
+    }
+  </style>
+</body>
+</html>

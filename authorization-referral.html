@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AVAILITY - Authorization & Referrals</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button id="backBtn" onclick="window.history.back()">
+    <span class="icon-back" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="11" cy="11" r="11" fill="#5ec6e7"/>
+        <path d="M13.5 7L9.5 11L13.5 15" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    Back
+  </button>
+  <button id="helpBtn" class="help-btn" title="Terminology Help">
+    <span class="icon-help" aria-hidden="true">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="14" cy="14" r="14" fill="#e3f0ff"/>
+        <circle cx="7" cy="14" r="2" fill="#3a8dde"/>
+        <circle cx="14" cy="14" r="2" fill="#3a8dde"/>
+        <circle cx="21" cy="14" r="2" fill="#3a8dde"/>
+      </svg>
+    </span>
+  </button>
+  <div id="helpModal" class="help-modal">
+    <div class="help-modal-content">
+      <h3>Terminology Used</h3>
+      <ul>
+        <li><strong>Authorization:</strong> Approval for a specific service.</li>
+        <li><strong>Referral:</strong> Recommendation to another provider.</li>
+        <li><strong>NPI:</strong> National Provider Identifier.</li>
+        <li><strong>ICD-10:</strong> Diagnosis code.</li>
+        <li><strong>CPT/HCPCS:</strong> Procedure code.</li>
+        <li><strong>Place of Service:</strong> Location where service is provided.</li>
+        <li><strong>Units:</strong> Number of services or items.</li>
+      </ul>
+      <button id="closeHelp" class="close-help">Close</button>
+    </div>
+  </div>
+  <h2 class="centered">Authorization & Referrals</h2>
+  <p class="page-desc centered">Quickly check the status of your authorization or referral requests. Enter all required details below.</p>
+  <div class="card-container centered">
+    <form id="authForm" onsubmit="event.preventDefault(); checkAuthStatus();">
+      <fieldset>
+        <legend>Member Information</legend>
+        <label for="memberName">Full Name:
+          <input type="text" id="memberName" required autocomplete="name">
+        </label>
+        <label for="memberId">Patient ID:
+          <input type="text" id="memberId" required autocomplete="off">
+        </label>
+        <label for="memberDob">Date of Birth:
+          <input type="date" id="memberDob" required>
+        </label>
+      </fieldset>
+      <fieldset>
+        <legend>Provider Information</legend>
+        <label for="referringNpi">Referring Provider NPI:
+          <input type="text" id="referringNpi" required autocomplete="off">
+        </label>
+        <label for="renderingNpi">Rendering Provider NPI:
+          <input type="text" id="renderingNpi" required autocomplete="off">
+        </label>
+        <label for="providerTaxId">Provider Tax ID:
+          <input type="text" id="providerTaxId" required autocomplete="off">
+        </label>
+        <label for="providerOrg">Organization:
+          <input type="text" id="providerOrg" required autocomplete="organization">
+        </label>
+      </fieldset>
+      <fieldset>
+        <legend>Service Details</legend>
+        <label for="serviceType">Service Type:
+          <select id="serviceType" required title="Type of healthcare service requested">
+            <option value="">-- Select Service Type --</option>
+            <option value="Radiology">Radiology</option>
+            <option value="Surgery">Surgery</option>
+            <option value="Physical Therapy">Physical Therapy</option>
+            <option value="Behavioral Health">Behavioral Health</option>
+            <option value="Lab">Lab</option>
+            <option value="DME">Durable Medical Equipment</option>
+            <option value="Home Health">Home Health</option>
+            <option value="Other">Other</option>
+          </select>
+        </label>
+        <label for="dxCode">Diagnosis Code (ICD-10):
+          <input type="text" id="dxCode" required autocomplete="off" title="ICD-10 code for diagnosis" aria-describedby="dxCodeTip">
+        </label>
+        <span id="dxCodeTip" class="field-tip">E.g. F32.9, M54.5</span>
+        <label for="procCode">Procedure Code (CPT/HCPCS):
+          <input type="text" id="procCode" required autocomplete="off" title="CPT or HCPCS code for procedure" aria-describedby="procCodeTip">
+        </label>
+        <span id="procCodeTip" class="field-tip">E.g. 99213, G0123</span>
+  <div id="loadingSpinner" class="loading-spinner" aria-live="polite" style="display:none;">
+    <div class="spinner"></div>
+    <span>Checking status...</span>
+  </div>
+        <label for="pos">Place of Service:
+          <input type="text" id="pos" required autocomplete="off">
+        </label>
+        <label for="units">Units:
+          <input type="number" id="units" required min="1">
+        </label>
+        <label for="startDate">Start Date:
+          <input type="date" id="startDate" required>
+        </label>
+        <label for="endDate">End Date:
+          <input type="date" id="endDate" required>
+        </label>
+      </fieldset>
+      <fieldset>
+        <legend>Authorization Inquiry</legend>
+        <label for="authNumber">Authorization/Referral Number:
+          <input type="text" id="authNumber" required autocomplete="off">
+        </label>
+      </fieldset>
+      <div class="form-actions">
+        <button type="submit" class="primary-btn">Check Authorization</button>
+        <button type="reset" class="secondary-btn">Submit Another Request</button>
+      </div>
+    </form>
+    <div id="authStatusResult" class="centered"></div>
+  </div>
+  <style>
+    .field-tip {
+      display: block;
+      font-size: 0.92em;
+      color: #3a8dde;
+      margin-bottom: 0.5em;
+      text-align: center;
+    }
+    .loading-spinner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.7em;
+      margin-top: 18px;
+      font-size: 1.08em;
+      color: #2a4d69;
+    }
+    .spinner {
+      width: 24px;
+      height: 24px;
+      border: 4px solid #e3f0ff;
+      border-top: 4px solid #3a8dde;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .help-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(58,141,222,0.12);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+    }
+    .help-modal.show {
+      display: flex;
+    }
+    .help-modal-content {
+      background: #fff;
+      border-radius: 14px;
+      box-shadow: 0 4px 24px rgba(58,141,222,0.18);
+      padding: 2em 2.5em 1.5em 2.5em;
+      max-width: 400px;
+      text-align: left;
+      color: #1a2540;
+    }
+    .help-modal-content h3 {
+      color: #3a8dde;
+      margin-bottom: 1em;
+      text-align: center;
+    }
+    .help-modal-content ul {
+      margin-bottom: 1.5em;
+      padding-left: 1.2em;
+    }
+    .help-modal-content li {
+      margin-bottom: 0.7em;
+      font-size: 1em;
+    }
+    .close-help {
+      background: linear-gradient(90deg, #3a8dde 0%, #5ec6e7 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5em 1.2em;
+      font-size: 1em;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(58,141,222,0.10);
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+      display: block;
+      margin: 0 auto;
+    }
+    .close-help:hover {
+      background: #5ec6e7;
+      color: #fff;
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 18px rgba(58,141,222,0.18);
+    }
+    .help-btn {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      z-index: 11;
+      padding: 0;
+      display: flex;
+      align-items: center;
+    }
+    .icon-help svg {
+      display: block;
+    }
+    #backBtn {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      background: linear-gradient(90deg, #3a8dde 0%, #5ec6e7 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.6em 1.4em 0.6em 1em;
+      font-size: 1.08em;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(58,141,222,0.10);
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    #backBtn:hover {
+      background: #5ec6e7;
+      color: #fff;
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 18px rgba(58,141,222,0.18);
+    }
+    .icon-back {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+    .centered {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .page-desc {
+      color: #3a8dde;
+      margin-bottom: 1em;
+      font-size: 1.08em;
+    }
+    .card-container {
+      max-width: 540px;
+      margin: 32px auto 0 auto;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 24px rgba(58,141,222,0.10);
+      padding: 2em 2em 1.5em 2em;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #authForm fieldset {
+      border: 1px solid #e3eaf3;
+      border-radius: 8px;
+      margin-bottom: 1.1em;
+      padding: 1em 1em 0.5em 1em;
+      text-align: center;
+    }
+    #authForm label {
+      display: block;
+      margin-bottom: 0.7em;
+      font-size: 1em;
+      color: #2a4d69;
+      text-align: center;
+    }
+    #authForm input, #authForm select {
+      width: 80%;
+      padding: 0.45em 0.7em;
+      margin-top: 0.2em;
+      border: 1px solid #b3cbe6;
+      border-radius: 6px;
+      font-size: 0.98em;
+      background: #f7fbff;
+      transition: border-color 0.2s;
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+    #authForm input:focus, #authForm select:focus {
+      border-color: #3a8dde;
+      outline: none;
+      background: #eaf6ff;
+    }
+    .form-actions {
+      display: flex;
+      gap: 1em;
+      margin-top: 1.2em;
+      justify-content: center;
+    }
+    .primary-btn {
+      background: linear-gradient(90deg, #3a8dde 0%, #5ec6e7 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.6em 1.4em;
+      font-size: 1.05em;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(58,141,222,0.10);
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+    .primary-btn:hover {
+      background: #5ec6e7;
+      color: #fff;
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 18px rgba(58,141,222,0.18);
+    }
+    .secondary-btn {
+      background: #eaf6ff;
+      color: #3a8dde;
+      border: 1px solid #b3cbe6;
+      border-radius: 8px;
+      padding: 0.6em 1.4em;
+      font-size: 1.05em;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+    }
+    .secondary-btn:hover {
+      background: #d2eafd;
+      color: #2a4d69;
+    }
+    #authStatusResult {
+      margin-top: 20px;
+      min-height: 40px;
+      border-radius: 8px;
+      background: #f7fbff;
+      box-shadow: 0 2px 8px rgba(58,141,222,0.07);
+      padding: 1em 1.2em;
+      font-size: 1.05em;
+      color: #2a4d69;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+    #authStatusResult.show {
+      opacity: 1;
+    }
+    @media (max-width: 600px) {
+      #backBtn {
+        top: 12px;
+        left: 8px;
+        font-size: 0.95em;
+        padding: 0.5em 1em 0.5em 0.7em;
+      }
+      .card-container {
+        padding: 1em 0.5em 1em 0.5em;
+      }
+    }
+  </style>
+
+  <script>
+    function checkAuthStatus() {
+      const authNumber = document.getElementById("authNumber").value.trim().toUpperCase();
+      const spinner = document.getElementById("loadingSpinner");
+      const div = document.getElementById("authStatusResult");
+      spinner.style.display = "flex";
+      div.classList.remove('show');
+      div.innerHTML = "";
+      setTimeout(() => {
+        const mockAuths = {
+          "AUTH2024": {
+            status: "Approved",
+            validFrom: "2025-07-01",
+            validTo: "2025-08-01",
+            notes: "Approved for 10 sessions"
+          },
+          "REF12345": {
+            status: "Pending",
+            validFrom: "TBD",
+            validTo: "TBD",
+            notes: "Waiting on clinical notes"
+          },
+          "AUTH9988": {
+            status: "Denied",
+            validFrom: "N/A",
+            validTo: "N/A",
+            notes: "Not medically necessary"
+          }
+        };
+        const result = mockAuths[authNumber];
+        spinner.style.display = "none";
+        if (result) {
+          div.innerHTML = `
+            <h3>Authorization Status</h3>
+            <p><strong>Status:</strong> ${result.status}</p>
+            <p><strong>Valid From:</strong> ${result.validFrom}</p>
+            <p><strong>Valid To:</strong> ${result.validTo}</p>
+            <p><strong>Notes:</strong> ${result.notes}</p>
+          `;
+          div.classList.add('show');
+        } else {
+          div.innerHTML = `<p style="color:red;">No authorization found for: ${authNumber}</p>`;
+          div.classList.add('show');
+        }
+      }, 1200);
+    }
+    // Hide result and spinner on reset
+    document.getElementById('authForm').addEventListener('reset', function() {
+      const div = document.getElementById('authStatusResult');
+      const spinner = document.getElementById('loadingSpinner');
+      div.classList.remove('show');
+      div.innerHTML = '';
+      spinner.style.display = 'none';
+    });
+  </script>
+</body>
+</html>

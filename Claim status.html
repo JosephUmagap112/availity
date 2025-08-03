@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AVAILITY - Claim Status</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <button id="backBtn" onclick="window.history.back()">
+    <span class="icon-back" aria-hidden="true">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="11" cy="11" r="11" fill="#5ec6e7"/>
+        <path d="M13.5 7L9.5 11L13.5 15" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+    Back
+  </button>
+  <div class="claim-header">
+    <h1>Claim Status</h1>
+    <p class="subtitle">Check the status of your claim by providing the required information below.</p>
+  </div>
+  <div class="form-section">
+    <form id="claimForm" onsubmit="event.preventDefault(); checkClaimStatus();">
+      <fieldset>
+        <legend>Claim Information</legend>
+        <label>Claim Number: <span class="required">*</span>
+          <input type="text" id="claimNumber" required>
+        </label>
+        <label>Date of Service: <span class="required">*</span>
+          <input type="date" id="dateOfService" required>
+        </label>
+        <label>Payer:
+          <select id="claimPayer">
+            <option value="">-- Select Payer --</option>
+            <option value="Aetna">Aetna</option>
+            <option value="United Health">United Health</option>
+            <option value="Blue Cross">Blue Cross</option>
+            <option value="Cigna">Cigna</option>
+            <option value="Humana">Humana</option>
+            <option value="Medicare">Medicare</option>
+            <option value="Medicaid">Medicaid</option>
+            <option value="Tricare">Tricare</option>
+            <option value="Kaiser Permanente">Kaiser Permanente</option>
+            <option value="Molina Healthcare">Molina Healthcare</option>
+            <option value="Centene">Centene</option>
+            <option value="WellCare">WellCare</option>
+            <option value="Other">Other</option>
+          </select>
+        </label>
+        <label>Provider NPI:
+          <input type="text" id="claimProviderNPI">
+        </label>
+      </fieldset>
+      <div class="form-actions">
+        <button type="submit">Check Status</button>
+        <button type="reset" class="reset-btn">Check Another Claim</button>
+      </div>
+    </form>
+    <div id="claimStatusResult"></div>
+  </div>
+
+  <script>
+    function checkClaimStatus() {
+      const claimNumber = document.getElementById("claimNumber").value.trim();
+      const dateOfService = document.getElementById("dateOfService").value.trim();
+      if (!claimNumber || !dateOfService) {
+        document.getElementById("claimStatusResult").innerHTML = '<p style="color:red;">Please enter all required fields.</p>';
+        return;
+      }
+      // ...existing code...
+      const mockClaims = {
+        "CLM12345": {
+          status: "Approved",
+          paymentDate: "2025-07-15",
+          amount: "$250.00"
+        },
+        "CLM54321": {
+          status: "Pending",
+          paymentDate: "N/A",
+          amount: "TBD"
+        }
+      };
+      const result = mockClaims[claimNumber.toUpperCase()];
+      const div = document.getElementById("claimStatusResult");
+      if (result) {
+        div.innerHTML = `
+          <h3>Status Found:</h3>
+          <p><strong>Status:</strong> ${result.status}</p>
+          <p><strong>Payment Date:</strong> ${result.paymentDate}</p>
+          <p><strong>Amount:</strong> ${result.amount}</p>
+        `;
+      } else {
+        div.innerHTML = `<p style="color:red;">No claim status found for Claim Number: ${claimNumber}</p>`;
+      }
+    }
+  </script>
+  <style>
+    #claimStatusResult {
+      margin-top: 20px;
+    }
+    #backBtn {
+      position: fixed;
+      top: 24px;
+      left: 24px;
+      background: linear-gradient(90deg, #3a8dde 0%, #5ec6e7 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.6em 1.4em 0.6em 1em;
+      font-size: 1.08em;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(58,141,222,0.10);
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 0.5em;
+    }
+    #backBtn:hover {
+      background: #5ec6e7;
+      color: #fff;
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 18px rgba(58,141,222,0.18);
+    }
+    .icon-back {
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 4px;
+    }
+    @media (max-width: 600px) {
+      #backBtn {
+        top: 12px;
+        left: 8px;
+        font-size: 0.95em;
+        padding: 0.5em 1em 0.5em 0.7em;
+      }
+    }
+    .claim-header {
+      text-align: center;
+      margin-top: 2.5em;
+      margin-bottom: 1.5em;
+    }
+    .claim-header h1 {
+      font-size: 1.35em;
+      color: #3a8dde;
+      margin-bottom: 0.2em;
+    }
+    .subtitle {
+      color: #5ec6e7;
+      font-size: 0.95em;
+      margin-bottom: 0.5em;
+    }
+    .form-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+    }
+    form {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(58,141,222,0.10);
+      padding: 2em 2em 1.5em 2em;
+      max-width: 480px;
+      width: 100%;
+      margin-bottom: 2em;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2em;
+    }
+    fieldset {
+      border: 1.5px solid #5ec6e7;
+      border-radius: 12px;
+      padding: 1em 1em 0.5em 1em;
+      margin-bottom: 1em;
+    }
+    legend {
+      color: #3a8dde;
+      font-weight: 600;
+      font-size: 0.98em;
+      padding: 0 0.5em;
+    }
+    label {
+      display: flex;
+      flex-direction: column;
+      font-size: 0.95em;
+      margin-bottom: 0.7em;
+      color: #1a2540;
+    }
+    input, select {
+      margin-top: 0.3em;
+      padding: 0.45em;
+      border-radius: 6px;
+      border: 1px solid #5ec6e7;
+      font-size: 0.95em;
+      background: #fafdff;
+      color: #1a2540;
+    }
+    .required {
+      color: #e53935;
+      font-size: 1em;
+      margin-left: 2px;
+      font-weight: bold;
+    }
+    .form-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.7em;
+      margin-top: 1em;
+    }
+    button[type="submit"] {
+      background: linear-gradient(90deg, #3a8dde 0%, #5ec6e7 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5em 1.1em;
+      font-size: 0.95em;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(58,141,222,0.10);
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+      width: 100%;
+      max-width: 220px;
+    }
+    button[type="submit"]:hover {
+      background: #5ec6e7;
+      color: #fff;
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 18px rgba(58,141,222,0.18);
+    }
+    .reset-btn {
+      background: linear-gradient(90deg, #43e97b 0%, #38f9d7 100%);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 0.5em 1.1em;
+      font-size: 0.95em;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(67,233,123,0.10);
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+      width: 100%;
+      max-width: 220px;
+    }
+    .reset-btn:hover {
+      background: #38f9d7;
+      color: #fff;
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 6px 18px rgba(67,233,123,0.18);
+    }
+  </style>
+</body>
+</html>

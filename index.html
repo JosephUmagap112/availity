@@ -1,0 +1,261 @@
+  <style>
+    .center-cards {
+      text-align: center;
+    }
+    .center-cards .card {
+      align-items: center;
+    }
+    .center-cards .card h3,
+    .center-cards .card p {
+      text-align: center;
+      width: 100%;
+    }
+  </style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>AvAility Portal</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="menu-container">
+      <button id="menuBtn" aria-label="Open menu">
+        <span class="icon-menu" aria-hidden="true">
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect y="7" width="32" height="3.5" rx="1.75" fill="#3a8dde"/>
+            <rect y="14" width="32" height="3.5" rx="1.75" fill="#3a8dde"/>
+            <rect y="21" width="32" height="3.5" rx="1.75" fill="#3a8dde"/>
+          </svg>
+        </span>
+      </button>
+      <div id="menuDropdown" class="menu-dropdown menu-hidden">
+        <a href="#" onclick="alert('Help info coming soon!')">Help</a>
+        <a href="#" onclick="alert('About info coming soon!')">About</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <div class="header-block">
+      <span class="availity-title">AVAILITY</span>
+      <span class="header-subtitle">Our comprehensive healthcare portal</span>
+    </div>
+
+    <div class="card-container center-cards">
+      <a class="card" href="benefits.html">
+        <span class="card-icon" aria-hidden="true">
+          <!-- Benefits icon -->
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="16" r="16" fill="#5ec6e7"/>
+            <path d="M10 20V12C10 10.8954 10.8954 10 12 10H20C21.1046 10 22 10.8954 22 12V20C22 21.1046 21.1046 22 20 22H12C10.8954 22 10 21.1046 10 20Z" stroke="#fff" stroke-width="2"/>
+            <path d="M16 14V18" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="16" cy="19" r="1" fill="#fff"/>
+          </svg>
+        </span>
+        <h3>Benefits & Eligibility</h3>
+        <p>Check Eligibility and Coverage</p>
+      </a>
+      <a class="card" href="Claim status.html">
+        <span class="card-icon" aria-hidden="true">
+          <!-- Status icon -->
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="16" r="16" fill="#3a8dde"/>
+            <rect x="10" y="14" width="12" height="2" rx="1" fill="#fff"/>
+            <rect x="10" y="18" width="8" height="2" rx="1" fill="#fff"/>
+            <rect x="10" y="10" width="6" height="2" rx="1" fill="#fff"/>
+          </svg>
+        </span>
+        <h3>Claim Status</h3>
+        <p>Track claims and view status updates.</p>
+      </a>
+      <a class="card" href="authorization-referral.html">
+        <span class="card-icon" aria-hidden="true">
+          <!-- Referrals icon -->
+          <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="16" cy="16" r="16" fill="#43e97b"/>
+            <path d="M12 20L20 12" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+            <path d="M20 20L12 12" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <h3>Authorization and Referral</h3>
+        <p>Request authorizations, manage referrals, and review guidelines.</p>
+      </a>
+    </div>
+  </main>
+  <style>
+    .header-block {
+      margin: 0 auto 1.8em auto;
+      text-align: center;
+      padding-top: 2em;
+      padding-bottom: 1.2em;
+      max-width: 600px;
+    }
+    .availity-title {
+      font-family: 'Segoe UI', 'Arial Black', Arial, sans-serif;
+      font-size: 3.2em;
+      font-weight: 900;
+      letter-spacing: 0.13em;
+      background: linear-gradient(90deg, #3a8dde 0%, #5ec6e7 100%);
+      color: #fff;
+      padding: 0.45em 1.2em 0.1em 1.2em;
+      border-radius: 28px;
+      border: none;
+      box-shadow: 0 4px 24px rgba(58,141,222,0.13);
+      margin-bottom: 0.1em;
+      display: block;
+      text-align: center;
+      text-shadow: 0 2px 16px rgba(58,141,222,0.18), 0 1px 0 #fff;
+      position: relative;
+      z-index: 2;
+      transition: box-shadow 0.3s, background 0.3s;
+    }
+    .header-subtitle {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      font-size: 1.15em;
+      color: #3a8dde;
+      font-weight: 500;
+      margin-top: 0.7em;
+      letter-spacing: 0.04em;
+      text-align: center;
+      display: inline-block;
+      background: #fafdff;
+      padding: 0.45em 1.2em;
+      border-radius: 18px;
+      box-shadow: 0 2px 12px rgba(58,141,222,0.13);
+      margin-bottom: 0.2em;
+      border: 1.5px solid #5ec6e7;
+    }
+    .card-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 2.2em;
+      margin-bottom: 2.5em;
+    }
+    .card {
+      background: linear-gradient(135deg, #e3f0ff 0%, #fafdff 100%);
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(58,141,222,0.10);
+      padding: 1.5em 2em 1.2em 2em;
+      max-width: 260px;
+      width: 100%;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      transition: box-shadow 0.3s, transform 0.3s;
+      border: 2px solid #e3f0ff;
+      cursor: pointer;
+    }
+    .card:hover {
+      box-shadow: 0 8px 32px rgba(58,141,222,0.18);
+      transform: translateY(-4px) scale(1.04);
+      border: 2px solid #5ec6e7;
+      background: linear-gradient(135deg, #e3f0ff 0%, #5ec6e7 100%);
+    }
+    .card-icon {
+      display: block;
+      margin: 0 auto 0.5em auto;
+      width: 38px;
+      height: 38px;
+      filter: drop-shadow(0 2px 8px rgba(58,141,222,0.10));
+      transition: filter 0.3s;
+    }
+    .card:hover .card-icon {
+      filter: drop-shadow(0 6px 18px rgba(58,141,222,0.18));
+    }
+    .card h3 {
+      margin-top: 0.2em;
+      font-size: 1.18em;
+      color: #1a2540;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-shadow: 0 1px 0 #fff, 0 2px 8px rgba(58,141,222,0.08);
+    }
+    .card p {
+      color: #2a4d69;
+      font-size: 1em;
+      margin-top: 0.3em;
+      margin-bottom: 0.2em;
+      text-shadow: 0 1px 0 #fff;
+    }
+  </style>
+
+  <footer class="footer center">
+    <p class="copyright-text">&copy; 2025 AvAility Training Portal. All rights reserved.</p>
+  </footer>
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const menuDropdown = document.getElementById('menuDropdown');
+    menuBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      menuDropdown.style.display = menuDropdown.style.display === 'none' ? 'block' : 'none';
+    });
+    document.addEventListener('click', function(e) {
+      if (!menuBtn.contains(e.target) && !menuDropdown.contains(e.target)) {
+        menuDropdown.style.display = 'none';
+      }
+    });
+  </script>
+  <style>
+    .menu-hidden {
+      display: none;
+    }
+    .copyright-text {
+      font-size: 0.72em;
+      color: #dfe6f0;
+      letter-spacing: 0.03em;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      opacity: 0.85;
+      margin-top: 0.7em;
+    }
+    .menu-container {
+      position: absolute;
+      top: 18px;
+      left: 24px;
+      z-index: 20;
+    }
+    #menuBtn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      outline: none;
+    }
+    .icon-menu svg {
+      display: block;
+    }
+    .menu-dropdown {
+      position: absolute;
+      top: 40px;
+      left: 0;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(58,141,222,0.12);
+      min-width: 120px;
+      padding: 0.5em 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .menu-dropdown a {
+      color: #3a8dde;
+      text-decoration: none;
+      padding: 0.7em 1.2em;
+      width: 100%;
+      font-size: 1em;
+      border-radius: 6px;
+      transition: background 0.2s, color 0.2s;
+      text-align: center;
+      display: block;
+    }
+    .menu-dropdown a:hover {
+      background: #e3f0ff;
+      color: #1a2540;
+    }
+  </style>
+</body>
+</html>

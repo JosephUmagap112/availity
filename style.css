@@ -1,0 +1,161 @@
+main {
+  flex: 1 0 auto;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2em 1em 4em 1em;
+  box-sizing: border-box;
+}
+@media (max-width: 900px) {
+  .card-container {
+    gap: 1em;
+  }
+  main {
+    padding: 1.5em 0.5em 4em 0.5em;
+  }
+}
+@media (max-width: 700px) {
+  .card-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2em;
+  }
+  .card {
+    width: 95vw;
+    max-width: 350px;
+  }
+  main {
+    padding: 1em 0.2em 4em 0.2em;
+  }
+  .navbar ul {
+    flex-direction: column;
+    align-items: center;
+  }
+  .navbar li {
+    margin: 0.5em 0;
+  }
+}
+body {
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: linear-gradient(135deg, #e3f0ff 0%, #f4f6fb 100%);
+  margin: 0;
+  color: #1a2540;
+}
+
+/* Navigation bar with blue accent and soft shadow */
+.navbar {
+  background: linear-gradient(90deg, #3a8dde 0%, #5ec6e7 100%);
+  padding: 0.7em 0;
+  box-shadow: 0 2px 12px rgba(58,141,222,0.08);
+  border-top-left-radius: 18px;
+  border-top-right-radius: 18px;
+}
+.navbar ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  flex-wrap: wrap;
+}
+.navbar li {
+  margin: 0 1.5em;
+}
+.navbar a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 0.6em 1em;
+  border-radius: 8px;
+  transition: background 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px rgba(94,198,231,0.08);
+}
+.navbar a[aria-current="page"], .navbar a:hover {
+  background: #5ec6e7;
+  color: #fff;
+  box-shadow: 0 4px 16px rgba(58,141,222,0.12);
+}
+
+
+.center {
+  text-align: center;
+}
+
+.subtitle {
+  color: #3a8dde;
+  font-size: 1.3em;
+  margin-bottom: 2em;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+
+.card-container {
+  display: flex;
+  justify-content: center;
+  gap: 2em;
+  flex-wrap: wrap;
+  margin: 2em 0;
+}
+.card {
+  background: linear-gradient(135deg, #fafdff 60%, #e3f0ff 100%);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(58,141,222,0.10);
+  padding: 2em 1.5em;
+  width: 270px;
+  text-decoration: none;
+  color: #1a2540;
+  transition: box-shadow 0.2s, transform 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border: 1.5px solid #5ec6e7;
+  position: relative;
+  overflow: hidden;
+}
+.card:hover {
+  box-shadow: 0 12px 36px rgba(58,141,222,0.22);
+  transform: translateY(-8px) scale(1.04);
+  border-color: #3a8dde;
+  background: linear-gradient(135deg, #e3f0ff 0%, #d0f3fa 100%);
+  cursor: pointer;
+  transition: box-shadow 0.3s, transform 0.3s, background 0.3s, border-color 0.3s;
+}
+.card h3 {
+  margin-top: 0;
+  color: #3a8dde;
+  font-size: 1.25em;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+.card p {
+  margin-bottom: 0;
+  color: #4a5a7a;
+  font-size: 1em;
+}
+
+/* Footer with blue accent and soft shadow */
+.footer {
+  background: linear-gradient(90deg, #3a8dde 0%, #5ec6e7 100%);
+  color: #fff;
+  padding: 1em 0 1.2em 0;
+  width: 100%;
+  font-size: 1em;
+  box-shadow: 0 -2px 12px rgba(58,141,222,0.08);
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 18px;
+  position: relative;
+  bottom: 0;
+  left: 0;
+}
+/* Remove duplicate body style */
+
+/* Remove duplicate center style */
+
+/* Remove duplicate subtitle style */
+
+/* Remove duplicate card-container style */
+
+/* Remove duplicate card style */
+
+/* Remove duplicate card:hover style */
